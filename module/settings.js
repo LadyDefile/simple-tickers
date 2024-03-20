@@ -1,42 +1,40 @@
-const MODULE_ID = "global-progress-clocks";
+const MODULE_ID = "simple-tickers";
 
 function registerSettings() {
     game.settings.register(MODULE_ID, "location", {
-        name: game.i18n.localize("GlobalProgressClocks.Settings.location.name"),
-        hint: game.i18n.localize("GlobalProgressClocks.Settings.location.hint"),
+        name: game.i18n.localize("SimpleTickers.Settings.location.name"),
+        hint: game.i18n.localize("SimpleTickers.Settings.location.hint"),
         config: true,
         choices: {
             topRight: "Top Right",
             bottomRight: "Bottom Right"
         },
         default: "bottomRight",
-        scope: "world",
-        onChange: () => window.clockPanel.render(true),
+        onChange: () => window.tickerPanel.render(true),
         type: String,
     });
 
     game.settings.register(MODULE_ID, "offset", {
-        name: game.i18n.localize("GlobalProgressClocks.Settings.offset.name"),
-        hint: game.i18n.localize("GlobalProgressClocks.Settings.offset.hint"),
+        name: game.i18n.localize("SimpleTickers.Settings.offset.name"),
+        hint: game.i18n.localize("SimpleTickers.Settings.offset.hint"),
         config: true,
         default: 0,
-        scope: "world",
-        onChange: () => window.clockPanel.render(true),
-        type: Number,
+        onChange: () => window.tickerPanel.render(true),
+        type: Number
     });
 
     game.settings.registerMenu(MODULE_ID, "settings", {
-        name: "GlobalProgressClocks.Settings.ClockTheme.name",
-        hint: "GlobalProgressClocks.Settings.ClockTheme.hint",
-        label: "GlobalProgressClocks.Settings.ClockTheme.label",
+        name: "SimpleTickers.Settings.TickerTheme.name",
+        hint: "SimpleTickers.Settings.TickerTheme.hint",
+        label: "SimpleTickers.Settings.TickerTheme.label",
         icon: "fa-solid fa-cog",
         type: DisplaySettings,
-        restricted: true,
+        restricted: true
     });
     DisplaySettings.registerSettings();
 
-    game.settings.register(MODULE_ID, "activeClocks", {
-        name: "Active Clocks",
+    game.settings.register(MODULE_ID, "activeTickers", {
+        name: "Active Tickers",
         scope: "world",
         type: Object,
         default: {},
@@ -49,10 +47,10 @@ class DisplaySettings extends FormApplication {
 
     static get defaultOptions() {
         const options = super.defaultOptions;
-        options.title = "GlobalProgressClocks.Settings.ClockTheme.label";
+        options.title = "SimpleTickers.Settings.TickerTheme.label";
         options.id = `${MODULE_ID}-display-settings`;
         options.classes = [MODULE_ID, "settings", "theme"];
-        options.template = "modules/global-progress-clocks/templates/settings.hbs";
+        options.template = "modules/simple-tickers/templates/settings.hbs";
         options.width = 500;
         options.height = "auto";
         options.closeOnSubmit = false;
@@ -62,24 +60,24 @@ class DisplaySettings extends FormApplication {
 
     static registerSettings() {
         game.settings.register(MODULE_ID, "defaultColor", {
-            name: game.i18n.localize("GlobalProgressClocks.Settings.defaultColor.name"),
-            hint: game.i18n.localize("GlobalProgressClocks.Settings.defaultColor.hint"),
+            name: game.i18n.localize("SimpleTickers.Settings.defaultColor.name"),
+            hint: game.i18n.localize("SimpleTickers.Settings.defaultColor.hint"),
             config: false,
             type: String,
             default: "#ff0000",
             onChange: () => {
-                window.clockPanel.render(true);
+                window.tickerPanel.render(true);
             }
         });
 
-        game.settings.register(MODULE_ID, "clockColors", {
-            name: game.i18n.localize("GlobalProgressClocks.Settings.clockColors.name"),
-            hint: game.i18n.localize("GlobalProgressClocks.Settings.clockColors.hint"),
+        game.settings.register(MODULE_ID, "tickerColors", {
+            name: game.i18n.localize("SimpleTickers.Settings.tickerColors.name"),
+            hint: game.i18n.localize("SimpleTickers.Settings.tickerColors.hint"),
             config: false,
             type: Array,
             default: [],
             onChange: () => {
-                window.clockPanel.render(true);
+                window.tickerPanel.render(true);
             }
         });
     }
@@ -88,7 +86,7 @@ class DisplaySettings extends FormApplication {
         if (Object.keys(this.cache).length === 0) {
             this.cache = {
                 defaultColor: game.settings.get(MODULE_ID, "defaultColor"),
-                clockColors: game.settings.get(MODULE_ID, "clockColors"),
+                tickerColors: game.settings.get(MODULE_ID, "tickerColors"),
             };
         }
 
@@ -105,21 +103,21 @@ class DisplaySettings extends FormApplication {
             this.render();
         });
 
-        $html.find("a[data-action=add-clock-color]").on("click", () => {
-            this.cache.clockColors ??= [];
-            this.cache.clockColors.push({
+        $html.find("a[data-action=add-ticker-color]").on("click", () => {
+            this.cache.tickerColors ??= [];
+            this.cache.tickerColors.push({
                 id: foundry.utils.randomID(),
-                name: "New Clock Type",
+                name: "New Ticker Type",
                 color: "#ff0000"
             });
             this.render();
         });
 
-        $html.find("a[data-action=remove-clock-color]").on("click", (evt) => {
-            const clockId = evt.target.closest("[data-clock-id]").dataset.clockId;
-            const idx = this.cache.clockColors.findIndex((c) => c.id === clockId);
+        $html.find("a[data-action=remove-ticker-color]").on("click", (evt) => {
+            const tickerId = evt.target.closest("[data-ticker-id]").dataset.tickerId;
+            const idx = this.cache.tickerColors.findIndex((c) => c.id === tickerId);
             if (idx >= 0) {
-                this.cache.clockColors.splice(idx, 1);
+                this.cache.tickerColors.splice(idx, 1);
             }
             this.render();
         });
@@ -135,11 +133,11 @@ class DisplaySettings extends FormApplication {
     async _updateObject(event, data) {
         data = expandObject(data);
         this.cache.defaultColor = data.defaultColor;
-        this.cache.clockColors = Object.values(data.clockColors ?? {});
+        this.cache.tickerColors = Object.values(data.tickerColors ?? {});
 
         if (event.type === "submit") {
             await game.settings.set(MODULE_ID, "defaultColor", this.cache.defaultColor);
-            await game.settings.set(MODULE_ID, "clockColors", this.cache.clockColors);
+            await game.settings.set(MODULE_ID, "tickerColors", this.cache.tickerColors);
             this.close();
         } else {
             console.log("RENDER");

@@ -1,6 +1,6 @@
 {
-    "GlobalProgressClocks": {
-        "AddClock": "Ajouter Horloge",
+    "SimpleTickers": {
+        "AddTicker": "Ajouter Horloge",
         "CreateDialog": {
             "Color": "Couleur",
             "Default": "Défaut",
@@ -9,7 +9,9 @@
             "Name": "Nom",
             "Value": "Valeur",
             "Size": "Taille",
-            "Private": "Privée"
+            "Private": "Privée",
+            "Secret": "Masquer le nom",
+            "Cycle": "Est cyclique"
         },
         "DeleteDialog": {
             "Title": "Effacer Horloge",
@@ -18,12 +20,12 @@
         "Empty": "Vide",
         "SizeTooBigError": "Les Horloges ne peuvent pas dépasser {maxSize} segments.",
         "Settings": {
-            "ClockTheme": {
+            "TickerTheme": {
                 "name": "Thème d'Horloge",
                 "hint": "Changer la couleur par défaut et ajouter de nouveaux choix",
                 "label": "Changer la configuration du thème d'Horloge"
             },
-            "clockColors": {
+            "tickerColors": {
                 "name": "Nom",
                 "color": "Couleur"
             },

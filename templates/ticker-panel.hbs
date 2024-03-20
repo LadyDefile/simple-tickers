@@ -1,0 +1,49 @@
+<section 
+    class="ticker-panel {{#if @root.options.editable}}editable{{/if}} {{verticalEdge}}"
+    style="--offset: {{offset}}">
+    {{#if GMTickers.[0]}}
+    <div class="ticker-list">
+        <div class="ticker-label">GM Tickers</div>
+        {{#each GMTickers as |gmticker|}}
+            <div class="ticker-entry" data-id="{{gmticker.id}}">
+                <div class="ticker" style="--areas: {{gmticker.max}}; --filled: {{gmticker.value}}; --ticker-color: {{gmticker.color}}">
+                    {{#each gmticker.spokes}}
+                        <div class="spoke" style="--index: {{ this }}"></div>
+                    {{/each}}
+                </div>
+                <div class="name-section">
+                    {{#if @root.options.isGM}}
+                        <div class="controls">
+                            <a data-action="delete-ticker"><i class="fas fa-trash"></i></a>
+                            <a data-action="edit-ticker"><i class="fas fa-edit"></i></a>
+                        </div>
+                    {{/if}}
+                    <div class="name">{{#if gmticker.private}}<i class="fas fa-eye-slash"></i>{{/if}} {{gmticker.name}}</div>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+    {{/if}}
+    {{#if (and UserTickers.[0] (not @root.options.isGM))}}
+        <div class="ticker-list">
+            <div class="ticker-label">Your Tickers</div>
+            {{#each UserTickers as |userticker|}}
+                    <div class="ticker-entry" data-id="{{userticker.id}}">
+                        <div class="ticker" style="--areas: {{userticker.max}}; --filled: {{userticker.value}}; --ticker-color: {{userticker.color}}">
+                            {{#each userticker.spokes}}
+                                <div class="spoke" style="--index: {{ this }}"></div>
+                            {{/each}}
+                        </div>
+                        <div class="name-section">
+                            <div class="controls">
+                                <a data-action="delete-ticker"><i class="fas fa-trash"></i></a>
+                                <a data-action="edit-ticker"><i class="fas fa-edit"></i></a>
+                            </div>
+                            <div class="name">{{userticker.name}}</div>
+                        </div>
+                    </div>
+            {{/each}}
+        </div>
+    {{/if}}
+    <a data-action="add-ticker"><i class="fas fa-plus"></i> {{localize "SimpleTickers.AddTicker"}}</a>
+</section>

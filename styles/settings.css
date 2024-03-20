@@ -1,9 +1,9 @@
-.global-progress-clocks .clock-types th {
+.simple-tickers .ticker-types th {
     padding-left: 0.25rem;
     text-align: left;
 }
 
-.global-progress-clocks .clock-types td.color {
+.simple-tickers .ticker-types td.color {
     align-items: center;
     display: flex;
     input {
@@ -14,7 +14,7 @@
     }
 }
 
-.global-progress-clocks .clock-types .controls {
+.simple-tickers .ticker-types .controls {
     width: 1.75rem;
     text-align: right;
     padding-right: 0.25rem;

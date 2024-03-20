@@ -1,36 +1,36 @@
 <form>
     <div class="form-group">
-        <label>{{ localize "GlobalProgressClocks.Settings.defaultColor.name" }}</label>
+        <label>{{ localize "SimpleTickers.Settings.defaultColor.name" }}</label>
         <div class="form-fields">
             {{colorPicker name="defaultColor" value=defaultColor}}
             <a data-action="reset-property" data-property="defaultColor">
                 <i class="fa-solid fa-redo"></i>
             </a>
         </div>
-        <p class="notes">{{localize "GlobalProgressClocks.Settings.defaultColor.hint"}}</p>
+        <p class="notes">{{localize "SimpleTickers.Settings.defaultColor.hint"}}</p>
     </div>
-    <table class="clock-types">
+    <table class="ticker-types">
         <thead>
             <tr>
-                <th>{{localize "GlobalProgressClocks.Settings.clockColors.name"}}</th>
-                <th>{{localize "GlobalProgressClocks.Settings.clockColors.color"}}</th>
-                <th class="controls"><a data-action="add-clock-color"><i class="fa-solid fa-plus fa-fw"></i></a></th>
+                <th>{{localize "SimpleTickers.Settings.tickerColors.name"}}</th>
+                <th>{{localize "SimpleTickers.Settings.tickerColors.color"}}</th>
+                <th class="controls"><a data-action="add-ticker-color"><i class="fa-solid fa-plus fa-fw"></i></a></th>
             </tr>
         </thead>
         <tbody>
-            {{#each clockColors as |type idx|}}
-                <tr data-clock-id="{{type.id}}">
+            {{#each tickerColors as |type idx|}}
+                <tr data-ticker-id="{{type.id}}">
                     <td>
-                        <input type="hidden" name="clockColors.{{idx}}.id" value="{{type.id}}"/>
-                        <input type="text" name="clockColors.{{idx}}.name" value="{{type.name}}"/>
+                        <input type="hidden" name="tickerColors.{{idx}}.id" value="{{type.id}}"/>
+                        <input type="text" name="tickerColors.{{idx}}.name" value="{{type.name}}"/>
                     </td>
-                    <td class="color">{{colorPicker name=(concat "clockColors." idx ".color") value=type.color}}</td>
-                    <td class="controls"><a data-action="remove-clock-color"><i class="fa-solid fa-trash fa-fw"></i></a></td>
+                    <td class="color">{{colorPicker name=(concat "tickerColors." idx ".color") value=type.color}}</td>
+                    <td class="controls"><a data-action="remove-ticker-color"><i class="fa-solid fa-trash fa-fw"></i></a></td>
                 </tr>
             {{/each}}
-            {{#unless clockColors}}
+            {{#unless tickerColors}}
                 <tr>
-                    <td colspan="3">{{localize "GlobalProgressClocks.Empty"}}</td>
+                    <td colspan="3">{{localize "SimpleTickers.Empty"}}</td>
                 </tr>
             {{/unless}}
         </tbody>

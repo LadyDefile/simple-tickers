@@ -1,39 +1,41 @@
 {
-    "GlobalProgressClocks": {
-        "AddClock": "Add Clock",
+    "SimpleTickers": {
+        "AddTicker": "Add Ticker",
         "CreateDialog": {
             "Color": "Color",
             "Default": "Default",
-            "EditTitle": "Edit Clock",
-            "Title": "Create Clock",
+            "EditTitle": "Edit Ticker",
+            "Title": "Create Ticker",
             "Name": "Name",
             "Value": "Value",
             "Size": "Size",
-            "Private": "Private"
+            "Private": "Private",
+            "Secret": "Hide Name",
+            "Cycle": "Is Cyclical"
         },
         "DeleteDialog": {
-            "Title": "Delete Clock",
+            "Title": "Delete Ticker",
             "Message": "Are you sure you want to delete {name}?"
         },
         "Empty": "Empty",
-        "SizeTooBigError": "Clocks cannot be larger than {maxSize} segments.",
+        "SizeTooBigError": "Ticker cannot be larger than {maxSize} segments.",
         "Settings": {
-            "ClockTheme": {
-                "name": "Clock Theme",
+            "TickerTheme": {
+                "name": "Ticker Theme",
                 "hint": "Change the default color and add new color choices",
-                "label": "Change Clock Theme Settings"
+                "label": "Change Ticker Theme Settings"
             },
-            "clockColors": {
+            "tickerColors": {
                 "name": "Name",
                 "color": "Color"
             },
             "defaultColor": {
-                "name": "Default Clock Color",
-                "hint": "The color clocks have by base, assuming they are not of a specific clock type"
+                "name": "Default Ticker Color",
+                "hint": "The color tickers have by base, assuming they are not of a specific ticker type"
             },
             "location": {
                 "name": "Screen Location",
-                "hint": "Where to anchor the displayed clocks"
+                "hint": "Where to anchor the displayed tickerss"
             },
             "offset": {
                 "name": "Panel offset",
