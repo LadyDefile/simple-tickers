@@ -13,7 +13,7 @@
         <div class="form-group">
             <label>{{localize "SimpleTickers.CreateDialog.Size"}}</label>
 
-            <div class="dropdown-wrapper">
+            <div class="dropdown-wrapper size-wrapper">
                 {{#if ticker.max}}
                     {{ numberInput ticker.max name="max" step=1 min=2 max=max_size }}
                 {{else}}
@@ -39,19 +39,22 @@
                 </select>
             </div>
         {{/if}}
-        <div class="form-group">
-            <label>{{localize "SimpleTickers.CreateDialog.Cycle"}}</label>
-            <input type="checkbox" name="cycle" {{checked ticker.cycle}}/>
-        </div>
         {{#if isGM}}
-        <div class="form-group">
-            <label>{{localize "SimpleTickers.CreateDialog.Private"}}</label>
-            <input type="checkbox" name="private" {{checked ticker.private}}/>
-        </div>
-        <div class="form-group">
-            <label>{{localize "SimpleTickers.CreateDialog.Secret"}}</label>
-            <input type="checkbox" name="secret" {{checked ticker.secret}}/>
-        </div>
+            <div class="form-group">
+                <label>{{localize "SimpleTickers.CreateDialog.Privacy"}}</label>
+                <div class="dropdown-wrapper privacy-wrapper">
+                    {{#if ticker.privacy}}
+                        <input type="text" name="privacy" value="{{ticker.privacy}}"/>
+                    {{else}}
+                        <input type="text" name="privacy" value="Public"/>
+                    {{/if}}
+                    <ul class="dropdown">
+                        <li data-value="Public">Public</li>
+                        <li data-value="Private">Private</li>
+                        <li data-value="Hide Name">Hide Name</li>
+                    </ul>
+                </div>
+            </div>
         {{/if}}
     </form>
 </div>

@@ -1,5 +1,6 @@
 import { TickerAddDialog } from "./dialog.js";
 import { MODULE_ID } from "./settings.js";
+import { PRIVACY_PUBLIC, PRIVACY_PRIVATE, PRIVACY_OBFUSCATE } from "./database.js";
 import SortableJS from "./sortable.complete.esm.js";
 
 export class TickerPanel extends Application {
@@ -31,15 +32,16 @@ export class TickerPanel extends Application {
 
         const userTickers = [];
         const gmTickers = [];
+        let bShow = false;
         for ( let i = 0; i < tickers.length; i++ )
         {
             // If the ticker is a GM ticker
             // AND
-            // The user is a GM or the ticker is public
-            if ( tickers[i].GMTicker && (game.user.isGM || !tickers[i].private))
+            // The user is a GM or the ticker is public.
+            if ( tickers[i].GMTicker && (game.user.isGM || tickers[i].privacy != PRIVACY_PRIVATE))
             {
                 let t = tickers[i];
-                if ( t.secret && !game.user.isGM )
+                if ( t.privacy == PRIVACY_OBFUSCATE && !game.user.isGM)
                     t.name = "???"
                 gmTickers.push(t);
             }
@@ -47,7 +49,7 @@ export class TickerPanel extends Application {
             {
                 tickers[i].ownedByUser = tickers[i].owner == game.user.id;
                 userTickers.push(tickers[i]);
-
+                bShow |= tickers[i].ownedByUser;
             }
         }
         
@@ -56,7 +58,8 @@ export class TickerPanel extends Application {
             options: {
                 editable: true,
                 isGM: game.user.isGM,
-                id: game.user.id
+                id: game.user.id,
+                showPersonal: bShow
             },
             verticalEdge: this.verticalEdge,
             GMTickers: this.verticalEdge === "bottom" ? gmTickers.reverse() : gmTickers,
@@ -104,12 +107,10 @@ export class TickerPanel extends Application {
             if ( ticker.GMTicker && !game.user.isGM)
                 return;
 
-            // Get the potential value
-            let val = ticker.value + 1;
-
             // If the value is above the max and the clock is cyclical
             // set the clock to 0. Otherwise, default behavior
-            ticker.value = val > ticker.max && ticker.cycle ? 0 : Math.min(val, ticker.max);
+            let val = ticker.value + 1;
+            ticker.value = val > ticker.max ? 0 : Math.min(val, ticker.max);
             this.db.update(ticker);
         });
 
@@ -128,10 +129,8 @@ export class TickerPanel extends Application {
             if ( ticker.GMTicker && !game.user.isGM)
                 return;
 
-            // Get the potential value
             let val = ticker.value-1;
-
-            ticker.value = val < 0 && ticker.cycle ? ticker.max : Math.max(ticker.value - 1, 0);
+            ticker.value = val < 0 ? ticker.max : Math.max(val, 0);
             this.db.update(ticker);
         });
 

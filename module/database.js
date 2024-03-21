@@ -6,15 +6,20 @@
  */
 
 import { MODULE_ID } from "./settings.js";
+
+export const PRIVACY_PUBLIC = 0;
+export const PRIVACY_PRIVATE = 1;
+export const PRIVACY_OBFUSCATE = 2;
+
 export class TickerDatabase extends Collection {
     addTicker(data={}) {
-        const defaultTicker = { value: 0, max: 4, name: "New Ticker", id: randomID(), private: false, secret: false, owner: game.user.id, GMTicker: true, cycle: false };
+        const defaultTicker = { value: 0, max: 4, name: "New Ticker", id: randomID(), privacy: PRIVACY_PUBLIC, owner: game.user.id, GMTicker: true };
         const newData = mergeObject(defaultTicker, data);
 
         // Use GM Proxy to create and show tickers
         if ( !game.user.isGM )
         {
-            newData.private = true;
+            newData.privacy = PRIVACY_PRIVATE;
             newData.GMTicker = false;
             window.tickerSocket.executeAsGM("addTicker", newData);
             return;

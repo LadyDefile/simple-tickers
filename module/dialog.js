@@ -1,4 +1,5 @@
 import { MODULE_ID } from "./settings.js";
+import { PRIVACY_PUBLIC, PRIVACY_PRIVATE, PRIVACY_OBFUSCATE } from "./database.js";
 
 const TICKER_MAX_SIZE = 32;
 const TICKER_SIZES = [2, 3, 4, 5, 6, 8, 10, 12];
@@ -20,6 +21,15 @@ export class TickerAddDialog extends Application {
     constructor(ticker, complete) {
         super();
         this.ticker = ticker;
+        if ( this.ticker )
+        {
+            if (this.ticker.privacy == PRIVACY_PUBLIC )
+                this.ticker.privacy = "Public";
+            else if ( this.ticker.privacy == PRIVACY_PRIVATE )
+                this.ticker.privacy = "Private";
+            else if ( this.ticker.privacy == PRIVACY_OBFUSCATE )
+                this.ticker.privacy = "Hide Name";
+        }
         this.complete = complete;
     }
 
@@ -41,9 +51,14 @@ export class TickerAddDialog extends Application {
         // Autofocus the name. Move to _injectHTML if we need to re-render
         $html.find("[autofocus]")[0]?.focus();
 
-        const inputElement = $html.find(".dropdown-wrapper input");
-        $html.find(".dropdown li").on("mousedown", (event) => {
-            inputElement.val(event.target.getAttribute("data-value"));
+        const sizeElement = $html.find(".size-wrapper input");
+        $html.find(".size-wrapper .dropdown li").on("mousedown", (event) => {
+            sizeElement.val(event.target.getAttribute("data-value"));
+        });
+
+        const privacyElement = $html.find(".privacy-wrapper input");
+        $html.find(".privacy-wrapper .dropdown li").on("mousedown", (event) => {
+            privacyElement.val(event.target.getAttribute("data-value"));
         });
 
         $html.find(".dialog-button").on("click", (evt) => {
@@ -52,9 +67,19 @@ export class TickerAddDialog extends Application {
             if (button === "yes") {
                 const form = $html[0].querySelector("form");
                 const data = new FormDataExtended(form).object;
+
+                if ( data.privacy == "Private" )
+                    data.privacy = PRIVACY_PRIVATE;
+                else if ( data.privacy == "Public" )
+                    data.privacy = PRIVACY_PUBLIC;
+                else if ( data.privacy == "Hide Name")
+                    data.privacy = PRIVACY_OBFUSCATE;
+
                 if (this.ticker) {
                     data.id = this.ticker.id;
                     data.value = Math.clamped(this.ticker.value, 0, data.max);
+                    data.owner = this.ticker.owner;
+                    data.GMTicker = this.ticker.GMTicker;
                 }
 
                 this.complete(data);

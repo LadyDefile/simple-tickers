@@ -9,9 +9,7 @@
             "Name": "Nom",
             "Value": "Valeur",
             "Size": "Taille",
-            "Private": "Privée",
-            "Secret": "Masquer le nom",
-            "Cycle": "Est cyclique"
+            "Privacy": "Confidentialité"
         },
         "DeleteDialog": {
             "Title": "Effacer Horloge",

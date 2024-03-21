@@ -9,9 +9,7 @@
             "Name": "Name",
             "Value": "Value",
             "Size": "Size",
-            "Private": "Private",
-            "Secret": "Hide Name",
-            "Cycle": "Is Cyclical"
+            "Privacy": "Privacy"
         },
         "DeleteDialog": {
             "Title": "Delete Ticker",

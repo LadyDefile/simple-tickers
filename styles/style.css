@@ -131,6 +131,7 @@
 }
 
 .ticker-label {
+    display: inline-block;
     width: 100%;
     color: White;
     background-color: rgba(15, 15, 15, 0.7);
