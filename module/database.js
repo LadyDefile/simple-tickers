@@ -52,7 +52,6 @@ export class TickerDatabase extends Collection {
             return;
         }
         delete tickers[id];
-
         if ( GM )
         {
             game.settings.set(MODULE_ID, "gmTickers", tickers);
@@ -65,7 +64,6 @@ export class TickerDatabase extends Collection {
 
     update(data) {
         if (!this.#verifyTickerData(data)) return;
-
         const tickers = this.#getTickerData(data.GMTicker);
         const existing = tickers[data.id];
         if (!existing) return;
