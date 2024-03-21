@@ -1,25 +1,25 @@
 import { MODULE_ID } from "./settings.js";
 
-const CLOCK_MAX_SIZE = 32;
-const CLOCK_SIZES = [2, 3, 4, 5, 6, 8, 10, 12];
+const TICKER_MAX_SIZE = 32;
+const TICKER_SIZES = [2, 3, 4, 5, 6, 8, 10, 12];
 
-export class ClockAddDialog extends Application {
+export class TickerAddDialog extends Application {
     static get defaultOptions() {
         return mergeObject(super.defaultOptions, {
-            title: "GlobalProgressClocks.CreateDialog.Title",
-            template: "modules/global-progress-clocks/templates/clock-add-dialog.hbs",
+            title: "SimpleTickers.CreateDialog.Title",
+            template: "modules/simple-tickers/templates/ticker-add-dialog.hbs",
             classes: ["dialog"],
             width: 400,
         });
     }
 
     get title() {
-        return game.i18n.localize(`GlobalProgressClocks.CreateDialog.${this.clock ? "EditTitle" : "Title"}`);
+        return game.i18n.localize(`SimpleTickers.CreateDialog.${this.ticker ? "EditTitle" : "Title"}`);
     }
 
-    constructor(clock, complete) {
+    constructor(ticker, complete) {
         super();
-        this.clock = clock;
+        this.ticker = ticker;
         this.complete = complete;
     }
 
@@ -27,10 +27,11 @@ export class ClockAddDialog extends Application {
         const data = await super.getData();
         return {
             ...data,
-            clock: this.clock,
-            maxSize: CLOCK_MAX_SIZE,
-            presetSizes: CLOCK_SIZES,
-            clockColors: game.settings.get(MODULE_ID, "clockColors"),
+            ticker: this.ticker,
+            maxSize: TICKER_MAX_SIZE,
+            presetSizes: TICKER_SIZES,
+            isGM: game.user.isGM,
+            tickerColors: game.settings.get(MODULE_ID, "tickerColors"),
         }
     }
 
@@ -51,9 +52,9 @@ export class ClockAddDialog extends Application {
             if (button === "yes") {
                 const form = $html[0].querySelector("form");
                 const data = new FormDataExtended(form).object;
-                if (this.clock) {
-                    data.id = this.clock.id;
-                    data.value = Math.clamped(this.clock.value, 0, data.max);
+                if (this.ticker) {
+                    data.id = this.ticker.id;
+                    data.value = Math.clamped(this.ticker.value, 0, data.max);
                 }
 
                 this.complete(data);

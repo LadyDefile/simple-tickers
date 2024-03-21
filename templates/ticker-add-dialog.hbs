@@ -1,0 +1,67 @@
+<div class="dialog-content">
+    <form class="add-ticker-form">
+        <div class="form-group">
+            <label>{{localize "SimpleTickers.CreateDialog.Name"}}</label>
+            <input type="text" name="name" value="{{ticker.name}}" autofocus />
+        </div>
+        {{#if ticker}}
+            <div class="form-group">
+                <label>{{localize "SimpleTickers.CreateDialog.Value"}}</label>
+                <input type="text" name="value" value="{{ticker.value}}" autofocus />
+            </div>
+        {{/if}}
+        <div class="form-group">
+            <label>{{localize "SimpleTickers.CreateDialog.Size"}}</label>
+
+            <div class="dropdown-wrapper">
+                {{#if ticker.max}}
+                    {{ numberInput ticker.max name="max" step=1 min=2 max=max_size }}
+                {{else}}
+                    {{ numberInput 4 name="max" step=1 min=2 max=max_size }}
+                {{/if}}
+                <ul class="dropdown">
+                    {{#each presetSizes as |size|}}
+                        <li data-value={{size}}>{{size}}</li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+        {{#if tickerColors}}
+            <div class="form-group">
+                <label>{{localize "SimpleTickers.CreateDialog.Color"}}</label>
+                <select name="colorId">
+                    {{#select ticker.colorId}}
+                        <option>{{localize "SimpleTickers.CreateDialog.Default"}}</option>
+                        {{#each tickerColors as |color|}}
+                            <option value="{{color.id}}">{{color.name}}</option>
+                        {{/each}}
+                    {{/select}}
+                </select>
+            </div>
+        {{/if}}
+        <div class="form-group">
+            <label>{{localize "SimpleTickers.CreateDialog.Cycle"}}</label>
+            <input type="checkbox" name="cycle" {{checked ticker.cycle}}/>
+        </div>
+        {{#if isGM}}
+        <div class="form-group">
+            <label>{{localize "SimpleTickers.CreateDialog.Private"}}</label>
+            <input type="checkbox" name="private" {{checked ticker.private}}/>
+        </div>
+        <div class="form-group">
+            <label>{{localize "SimpleTickers.CreateDialog.Secret"}}</label>
+            <input type="checkbox" name="secret" {{checked ticker.secret}}/>
+        </div>
+        {{/if}}
+    </form>
+</div>
+<div class="dialog-buttons">
+    <button class="dialog-button" data-button="yes">
+        <i class="fas fa-check"></i>
+        {{localize "Confirm"}}
+    </button>
+    <button class="dialog-button" data-button="no">
+        <i class="fas fa-times"></i>
+        {{localize "Cancel"}}
+    </button>
+</div>
