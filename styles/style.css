@@ -130,6 +130,11 @@
     display: none;
 }
 
+.ticker-list.hidden {
+    height: 0px;
+    overflow: hidden;
+}
+
 .ticker-label {
     display: inline-block;
     width: 100%;

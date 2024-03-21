@@ -30,29 +30,87 @@ export class TickerPanel extends Application {
         const data = await super.getData(options);
         const tickers = await this.prepareTickers();
 
-        const userTickers = [];
+        const userTickers = {};
         const gmTickers = [];
+        const collapsed = game.settings.get(MODULE_ID, "collapsedHeaders" );
+
+        // For the purpose of organization, create an empty entry for the
+        // current user in the userTickers option. This will ensure the
+        // user's tickers are always next after the GM's in the list.
+        userTickers[game.user.id] = {
+            "id": game.user.id,
+            "collapsed": collapsed.includes(game.user.id),
+            "name": "Your Tickers",
+            "tickers": [],
+            "visCount": 0
+        }
+
+        // Categorize all of the tickers
         let bShow = false;
         for ( let i = 0; i < tickers.length; i++ )
         {
+            let t = tickers[i];
+
+            // Obfuscate the name if needed
+            if ( t.privacy == PRIVACY_OBFUSCATE
+                && !game.user.isGM
+                && t.owner != game.user.id)
+                t.name = "???"
+            
+            // This flag is to enable the "private" eye icon.
+            t.private = t.privacy == PRIVACY_PRIVATE;
+
             // If the ticker is a GM ticker
-            // AND
-            // The user is a GM or the ticker is public.
-            if ( tickers[i].GMTicker && (game.user.isGM || tickers[i].privacy != PRIVACY_PRIVATE))
+            if ( t.GMTicker )
             {
-                let t = tickers[i];
-                if ( t.privacy == PRIVACY_OBFUSCATE && !game.user.isGM)
-                    t.name = "???"
+                // If this is for GM's only and the user is not a GM
+                // hide it from the user.
+                if ( t.privacy == PRIVACY_PRIVATE && !game.user.isGM )
+                    continue;
+
+                // The clock is viewable by all
+                t.viewable = true;
+
+                // Push the clock to the GM list
                 gmTickers.push(t);
             }
             else
             {
-                tickers[i].ownedByUser = tickers[i].owner == game.user.id;
-                userTickers.push(tickers[i]);
-                bShow |= tickers[i].ownedByUser;
+                t.ownedByUser = t.owner == game.user.id;
+                
+                t.viewable = t.ownedByUser;     // Start by saying only the user can view it
+                t.viewable |= game.user.isGM    // If the user is a GM, it overrides the above
+                t.viewable |= t.privacy != PRIVACY_PRIVATE; // If the privacy is not private, it's viewable.
+
+                // If the user is already in the ticker data
+                // add the ticker to the user otherwise create
+                // the new data section
+                if ( userTickers[t.owner] )
+                {
+                    userTickers[t.owner].tickers.push(t);
+                    userTickers[t.owner].visCount +=  t.privacy == PRIVACY_PRIVATE ? 0 : 1;
+                }
+                else
+                {
+                    userTickers[t.owner] = {
+                        "id": t.owner,
+                        "collapsed": collapsed.includes(t.owner),
+                        "name": game.users.get(t.owner).name,
+                        "tickers": [t],
+                        "visCount": t.privacy == PRIVACY_PRIVATE && !game.user.isGM ? 0 : 1 }
+                }
+
+                bShow |= t.ownedByUser;
             }
         }
-        
+
+        if ( this.verticalEdge === "bottom" )
+        {
+            for ( let i = 0; i < userTickers.length; i++ )
+            {
+                userTickers[i].tickers = userTickers[i].ticker.reverse();
+            }
+        }
         return {
             ...data,
             options: {
@@ -63,7 +121,7 @@ export class TickerPanel extends Application {
             },
             verticalEdge: this.verticalEdge,
             GMTickers: this.verticalEdge === "bottom" ? gmTickers.reverse() : gmTickers,
-            UserTickers: this.verticalEdge === "bottom" ? userTickers.reverse() : userTickers,
+            UserTickers: userTickers,
             offset: `${game.settings.get(MODULE_ID, "offset") / 16}rem`,
         };
     }
@@ -102,10 +160,6 @@ export class TickerPanel extends Application {
             // a GM ticker
             if ( ticker.owner !== game.user.id && !ticker.GMTicker)
                 return;
-            
-            // The ticker is a GM ticker and the current user is not a GM.
-            if ( ticker.GMTicker && !game.user.isGM)
-                return;
 
             // If the value is above the max and the clock is cyclical
             // set the clock to 0. Otherwise, default behavior
@@ -120,13 +174,9 @@ export class TickerPanel extends Application {
             
             if (!ticker)
             
-            // If the current user is not the ticket owner and the ticker is not
-            // a GM ticker
-            if ( ticker.owner !== game.user.id && !ticker.GMTicker)
-                return;
-            
-            // The ticker is a GM ticker and the current user is not a GM.
-            if ( ticker.GMTicker && !game.user.isGM)
+            // If the current user is not the ticket owner and the user is not
+            // the GM
+            if ( ticker.owner !== game.user.id && !game.user.isGM)
                 return;
 
             let val = ticker.value-1;
@@ -135,7 +185,23 @@ export class TickerPanel extends Application {
         });
 
         $html.find("[data-action=collapse]").on("click", async (event) => {
-            console.log(event);
+            let target = event.target.dataset.target;
+            let collapsed = game.settings.get(MODULE_ID, "collapsedHeaders" );
+
+            if ( collapsed.includes(target) )
+            {
+                // Get the index
+                const idx = collapsed.indexOf(target);
+                if ( idx > -1 ) {
+                    // Remove the index
+                    collapsed.splice(idx, 1);
+                    game.settings.set(MODULE_ID, "collapsedHeaders", collapsed);
+                }
+            }
+            else {
+                collapsed.push(target);
+                game.settings.set(MODULE_ID, "collapsedHeaders", collapsed);
+            }
         })
 
         $html.find("[data-action=add-ticker]").on("click", async () => {
@@ -145,7 +211,12 @@ export class TickerPanel extends Application {
         $html.find("[data-action=edit-ticker]").on("click", async (event) => {
             const tickerId = event.target.closest("[data-id]").dataset.id;
             const ticker = this.db.get(tickerId);
-            if (!ticker || ticker.owner !== game.user.id) return;
+            if (!ticker)
+                return;
+            
+            // Only the ticker owner and GM can edit the ticker.
+            if ( ticker.owner !== game.user.id && !game.user.isGM )
+                return;
 
             new TickerAddDialog(ticker, (data) => this.db.update(data)).render(true);
         });
@@ -155,13 +226,9 @@ export class TickerPanel extends Application {
             const ticker = this.db.get(tickerId);
             if (!ticker)
             
-            // If the current user is not the ticket owner and the ticker is not
-            // a GM ticker
-            if ( ticker.owner !== game.user.id && !ticker.GMTicker)
-                return;
-            
-            // The ticker is a GM ticker and the current user is not a GM.
-            if ( ticker.GMTicker && !game.user.isGM)
+            // If the current user is not the ticket owner and not a GM
+            // don't allow them to delete it.
+            if ( ticker.owner !== game.user.id && !game.user.isGM)
                 return;
 
             const deleting = await Dialog.confirm({
@@ -170,7 +237,7 @@ export class TickerPanel extends Application {
             });
             
             if (deleting) {
-                this.db.delete(tickerId, game.user.isGM);
+                this.db.delete(tickerId, ticker.GMTicker);
             }
         });
 

@@ -19,7 +19,6 @@ export class TickerDatabase extends Collection {
         // Use GM Proxy to create and show tickers
         if ( !game.user.isGM )
         {
-            newData.privacy = PRIVACY_PRIVATE;
             newData.GMTicker = false;
             window.tickerSocket.executeAsGM("addTicker", newData);
             return;

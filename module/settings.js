@@ -56,6 +56,17 @@ function registerSettings() {
         default: {},
         config: false
     });
+
+    game.settings.register(MODULE_ID, "collapsedHeaders", {
+        name: game.i18n.localize("SimpleTickers.Settings.hiddenTickers.name"),
+        hint: game.i18n.localize("SimpleTickers.Settings.hiddenTickers.hint"),
+        config: false,
+        type: Array,
+        default: [],
+        onChange: () => {
+            window.tickerPanel.render(true);
+        }
+    });
 }
 
 class DisplaySettings extends FormApplication {
