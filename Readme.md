@@ -26,4 +26,4 @@ window.clockDatabase.update({ id: clock.id, value: clock.value + 1 });
 
 ## Credits
 * Lunar-Dawn for converting from the original images to CSS generated
-* CarlosFdez for the parent mode [Global Progress Clocks](https://github.com/CarlosFdez/global-progress-clocks)
+* CarlosFdez for the parent module [Global Progress Clocks](https://github.com/CarlosFdez/global-progress-clocks)
