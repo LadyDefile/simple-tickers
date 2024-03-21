@@ -90,7 +90,7 @@ export class TickerPanel extends Application {
                 if ( userTickers[t.owner] )
                 {
                     userTickers[t.owner].tickers.push(t);
-                    userTickers[t.owner].visCount +=  t.privacy == PRIVACY_PRIVATE ? 0 : 1;
+                    userTickers[t.owner].visCount +=  t.privacy == PRIVACY_PRIVATE && !t.viewable ? 0 : 1;
                 }
                 else
                 {
@@ -99,7 +99,7 @@ export class TickerPanel extends Application {
                         "collapsed": collapsed.includes(t.owner),
                         "name": game.users.get(t.owner).name,
                         "tickers": [t],
-                        "visCount": t.privacy == PRIVACY_PRIVATE && !override_privacy ? 0 : 1 }
+                        "visCount": t.privacy == PRIVACY_PRIVATE && !t.viewable ? 0 : 1 }
                 }
 
                 bShow |= t.ownedByUser;
