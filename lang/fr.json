@@ -38,6 +38,10 @@
             "offset": {
                 "name": "Décalage du panneau",
                 "hint": "Distance depuis le haut ou le bas en pixels (ajustée en fonction de la taille de la police)"
+            },
+            "gmSeesHidden": {
+                "name": "Les GM voient des noms cachés",
+                "hint": "La désactivation de cette option empêche les GM de voir le nom d'un minuteur si le joueur définit la confidentialité sur \"Hide Name\"."
             }
         }
     }

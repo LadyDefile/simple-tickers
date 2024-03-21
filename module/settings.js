@@ -57,6 +57,16 @@ function registerSettings() {
         config: false
     });
 
+    game.settings.register(MODULE_ID, "gmOverridePrivacy", {
+        name: game.i18n.localize("SimpleTickers.Settings.gmOverridePrivacy.name"),
+        hint: game.i18n.localize("SimpleTickers.Settings.gmOverridePrivacy.hint"),
+        config: true,
+        default: true,
+        scope: "world",
+        onChange: () => window.tickerPanel.render(true),
+        type: Boolean
+    });
+
     game.settings.register(MODULE_ID, "collapsedHeaders", {
         name: game.i18n.localize("SimpleTickers.Settings.hiddenTickers.name"),
         hint: game.i18n.localize("SimpleTickers.Settings.hiddenTickers.hint"),

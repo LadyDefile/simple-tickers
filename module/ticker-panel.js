@@ -45,6 +45,8 @@ export class TickerPanel extends Application {
             "visCount": 0
         }
 
+        let override_privacy = game.user.isGM && game.settings.get(MODULE_ID, "gmOverridePrivacy")
+
         // Categorize all of the tickers
         let bShow = false;
         for ( let i = 0; i < tickers.length; i++ )
@@ -53,7 +55,7 @@ export class TickerPanel extends Application {
 
             // Obfuscate the name if needed
             if ( t.privacy == PRIVACY_OBFUSCATE
-                && !game.user.isGM
+                && !override_privacy
                 && t.owner != game.user.id)
                 t.name = "???"
             
@@ -79,7 +81,7 @@ export class TickerPanel extends Application {
                 t.ownedByUser = t.owner == game.user.id;
                 
                 t.viewable = t.ownedByUser;     // Start by saying only the user can view it
-                t.viewable |= game.user.isGM    // If the user is a GM, it overrides the above
+                t.viewable |= override_privacy  // If the user is a GM, it overrides the above
                 t.viewable |= t.privacy != PRIVACY_PRIVATE; // If the privacy is not private, it's viewable.
 
                 // If the user is already in the ticker data
@@ -97,7 +99,7 @@ export class TickerPanel extends Application {
                         "collapsed": collapsed.includes(t.owner),
                         "name": game.users.get(t.owner).name,
                         "tickers": [t],
-                        "visCount": t.privacy == PRIVACY_PRIVATE && !game.user.isGM ? 0 : 1 }
+                        "visCount": t.privacy == PRIVACY_PRIVATE && !override_privacy ? 0 : 1 }
                 }
 
                 bShow |= t.ownedByUser;
