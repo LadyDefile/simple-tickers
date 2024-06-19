@@ -3,6 +3,21 @@ import { MODULE_ID } from "./settings.js";
 import { PRIVACY_PUBLIC, PRIVACY_PRIVATE, PRIVACY_OBFUSCATE } from "./database.js";
 import SortableJS from "./sortable.complete.esm.js";
 
+function getAuth(ticker) {
+    // If the current user is not the ticker owner and the ticker is not
+    // a GM ticker
+
+    // Start by assessing if the current user is the ticker owner
+    let auth = ticker.owner === game.user.id;
+
+    // Check if the user is a GM
+    auth |= game.user.isGM;
+
+    // Check if the ticker is shared
+    auth |= ticker.shared;
+    return auth;
+}
+
 export class TickerPanel extends Application {
     refresh = foundry.utils.debounce(this.render, 100);
     lastRendered = [];
@@ -32,6 +47,7 @@ export class TickerPanel extends Application {
 
         const userTickers = {};
         const gmTickers = [];
+        const sharedTickers = [];
         const collapsed = game.settings.get(MODULE_ID, "collapsedHeaders" );
 
         // For the purpose of organization, create an empty entry for the
@@ -62,8 +78,17 @@ export class TickerPanel extends Application {
             // This flag is to enable the "private" eye icon.
             t.private = t.privacy == PRIVACY_PRIVATE;
 
+            // If the ticker is shared
+            if ( t.shared ) {
+                // Shared tickers are always viewable
+                t.viewable = true;
+                t.editable = t.owner === game.user.id;
+
+                sharedTickers.push(t);
+            }
+
             // If the ticker is a GM ticker
-            if ( t.GMTicker )
+            else if ( t.GMTicker )
             {
                 // If this is for GM's only and the user is not a GM
                 // hide it from the user.
@@ -124,6 +149,7 @@ export class TickerPanel extends Application {
             verticalEdge: this.verticalEdge,
             GMTickers: this.verticalEdge === "bottom" ? gmTickers.reverse() : gmTickers,
             UserTickers: userTickers,
+            SharedTickers: sharedTickers,
             offset: `${game.settings.get(MODULE_ID, "offset") / 16}rem`,
         };
     }
@@ -156,12 +182,20 @@ export class TickerPanel extends Application {
             const tickerId = event.target.closest("[data-id]").dataset.id;
             const ticker = this.db.get(tickerId);
             
-            if (!ticker)
-            
-            // If the current user is not the ticket owner and the ticker is not
-            // a GM ticker
-            if ( ticker.owner !== game.user.id && !ticker.GMTicker)
+            // Failed to get the ticker object.
+            if (!ticker) {
+                console.log("failed to get the ticker: " + tickerId)
                 return;
+            }
+            
+            // If the current user is not the ticker owner and the ticker is not
+            // a GM ticker
+            let auth = getAuth(ticker);
+
+            if ( !auth ) {
+                console.log("Not authorized to edit ticker.");
+                return;
+            }
 
             // If the value is above the max and the clock is cyclical
             // set the clock to 0. Otherwise, default behavior
@@ -174,12 +208,20 @@ export class TickerPanel extends Application {
             const tickerId = event.target.closest("[data-id]").dataset.id;
             const ticker = this.db.get(tickerId);
             
-            if (!ticker)
-            
-            // If the current user is not the ticket owner and the user is not
-            // the GM
-            if ( ticker.owner !== game.user.id && !game.user.isGM)
+            // Failed to get the ticker object.
+            if (!ticker) {
+                console.log("failed to get the ticker: " + tickerId)
                 return;
+            }
+            
+            // If the current user is not the ticker owner and the ticker is not
+            // a GM ticker
+            let auth = getAuth(ticker);
+
+            if ( !auth ) {
+                console.log("Not authorized to edit ticker.");
+                return;
+            }
 
             let val = ticker.value-1;
             ticker.value = val < 0 ? ticker.max : Math.max(val, 0);
@@ -213,12 +255,19 @@ export class TickerPanel extends Application {
         $html.find("[data-action=edit-ticker]").on("click", async (event) => {
             const tickerId = event.target.closest("[data-id]").dataset.id;
             const ticker = this.db.get(tickerId);
-            if (!ticker)
-                return;
             
-            // Only the ticker owner and GM can edit the ticker.
-            if ( ticker.owner !== game.user.id && !game.user.isGM )
+            // Failed to get the ticker object.
+            if (!ticker) {
+                console.log("failed to get the ticker: " + tickerId)
                 return;
+            }
+            
+            // If the current user is not authorized then abort
+            let auth = getAuth(ticker);
+            if ( !auth ) {
+                console.log("Not authorized to edit ticker.");
+                return;
+            }
 
             new TickerAddDialog(ticker, (data) => this.db.update(data)).render(true);
         });
@@ -226,12 +275,19 @@ export class TickerPanel extends Application {
         $html.find("[data-action=delete-ticker]").on("click", async (event) => {
             const tickerId = event.target.closest("[data-id]").dataset.id;
             const ticker = this.db.get(tickerId);
-            if (!ticker)
             
-            // If the current user is not the ticket owner and not a GM
-            // don't allow them to delete it.
-            if ( ticker.owner !== game.user.id && !game.user.isGM)
+            // Failed to get the ticker object.
+            if (!ticker) {
+                console.log("failed to get the ticker: " + tickerId)
                 return;
+            }
+            
+            // If the current user is not authorized then abort
+            let auth = getAuth(ticker);
+            if ( !auth ) {
+                console.log("Not authorized to edit ticker.");
+                return;
+            }
 
             const deleting = await Dialog.confirm({
                 title: game.i18n.localize("SimpleTickers.DeleteDialog.Title"),

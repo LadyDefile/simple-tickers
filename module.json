@@ -1,51 +1,43 @@
 {
-  "id": "simple-tickers",
-  "title": "Simple Tickers",
-  "description": "Simple, easy to use counters. All credit for the original design and code goes to Supe and Global Progress Clocks",
-  "version": "0.1.3",
-  "authors": [
-    {
-      "name": "Supe",
-      "flags": {}
+    "id": "simple-tickers",
+    "title": "Simple Tickers",
+    "description": "Simple, easy to use counters. All credit for the original design and code goes to Supe and Global Progress Clocks",
+    "version": "0.1.8",
+    "authors": [
+        {
+            "name": "Supe",
+            "flags": {}
+        },
+        {
+            "name": "Lady Defile",
+            "flags": {}
+        }
+    ],
+    "compatibility": {
+        "minimum": "10",
+        "verified": "12"
     },
-    {
-      "name": "Lady Defile",
-      "flags": {}
-    }
-  ],
-  "compatibility": {
-    "minimum": "10",
-    "verified": "11"
-  },
-  "scripts": [
-    "greensock/dist/gsap.min.js"
-  ],
-  "esmodules": [
-    "module/index.js"
-  ],
-  "languages": [
-    {
-      "lang": "en",
-      "name": "English",
-      "path": "lang/en.json",
-      "flags": {}
-    }
-  ],
-  "relationships": {
-    "requires": [
-      {
-        "id": "socketlib",
-        "type": "module"
-      }
-    ]
-  },
-  "styles": [
-    "styles/style.css",
-    "styles/dialog.css",
-    "styles/settings.css"
-  ],
-  "socket" : true,
-  "url": "https://github.com/LadyDefile/simple-tickers",
-  "manifest": "https://github.com/LadyDefile/simple-tickers/releases/latest/download/module.json",
-  "download": "https://github.com/LadyDefile/simple-tickers/releases/download/v0.1.3/module.zip"
+    "scripts": ["greensock/dist/gsap.min.js"],
+    "esmodules": ["module/index.js"],
+    "languages": [
+        {
+            "lang": "en",
+            "name": "English",
+            "path": "lang/en.json",
+            "flags": {}
+        }
+    ],
+    "relationships": {
+        "requires": [
+            {
+                "id": "socketlib",
+                "type": "module"
+            }
+        ]
+    },
+    "styles": ["styles/style.css", "styles/dialog.css", "styles/settings.css"],
+    "socket": true,
+    "url": "https://github.com/LadyDefile/simple-tickers",
+    "manifest": "https://github.com/LadyDefile/simple-tickers/releases/latest/download/module.json",
+    "download": "https://github.com/LadyDefile/simple-tickers/releases/download/v0.1.8/module.zip"
 }

@@ -9,7 +9,8 @@
             "Name": "Nom",
             "Value": "Valeur",
             "Size": "Taille",
-            "Privacy": "Confidentialité"
+            "Privacy": "Confidentialité",
+            "Shared": "N'importe qui peut modifier"
         },
         "DeleteDialog": {
             "Title": "Effacer Horloge",

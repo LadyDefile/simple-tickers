@@ -3,7 +3,7 @@
     style="--offset: {{offset}}">
     {{#if GMTickers.[0]}}
         <div class="list-container">
-            <a class="ticker-label" data-target="gm-ticker-list" data-action="collapse">GM Tickers</a>
+            <a class="ticker-label" data-target="gm-ticker-list" data-action="collapse">GM</a>
             <div id="gm-ticker-list" class="ticker-list gm-ticker-list">
                 {{#each GMTickers as |gmticker|}}
                     <div class="ticker-entry gm-ticker-entry" data-id="{{gmticker.id}}">
@@ -20,6 +20,31 @@
                                 </div>
                             {{/if}}
                             <div class="name">{{#if gmticker.private}}<i class="fas fa-eye-slash"></i>{{/if}} {{gmticker.name}}</div>
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+    {{/if}}
+    {{#if SharedTickers.[0]}}
+        <div class="list-container">
+            <a class="ticker-label" data-target="shared-ticker-list" data-action="collapse">Shared</a>
+            <div id="shared-ticker-list" class="ticker-list shared-ticker-list">
+                {{#each SharedTickers as |sharedticker|}}
+                    <div class="ticker-entry shared-ticker-entry" data-id="{{sharedticker.id}}">
+                        <div class="ticker" style="--areas: {{sharedticker.max}}; --filled: {{sharedticker.value}}; --ticker-color: {{sharedticker.color}}">
+                            {{#each sharedticker.spokes}}
+                                <div class="spoke" style="--index: {{ this }}"></div>
+                            {{/each}}
+                        </div>
+                        <div class="name-section">
+                            {{#if sharedticker.editable}}
+                                <div class="controls">
+                                    <a data-action="delete-ticker"><i class="fas fa-trash"></i></a>
+                                    <a data-action="edit-ticker"><i class="fas fa-edit"></i></a>
+                                </div>
+                            {{/if}}
+                            <div class="name">{{sharedticker.name}}</div>
                         </div>
                     </div>
                 {{/each}}

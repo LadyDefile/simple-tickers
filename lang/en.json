@@ -1,47 +1,52 @@
 {
     "SimpleTickers": {
-        "AddTicker": "Ajouter Horloge",
+        "AddTicker": "Add Ticker",
         "CreateDialog": {
-            "Color": "Couleur",
-            "Default": "Défaut",
-            "EditTitle": "Modifier Horloge",
-            "Title": "Créer Horloge",
-            "Name": "Nom",
-            "Value": "Valeur",
-            "Size": "Taille",
-            "Privacy": "Confidentialité"
+            "Color": "Color",
+            "Default": "Default",
+            "EditTitle": "Edit Ticker",
+            "Title": "Create Ticker",
+            "Name": "Name",
+            "Value": "Value",
+            "Size": "Size",
+            "Privacy": "Privacy",
+            "Shared": "Shared"
         },
         "DeleteDialog": {
-            "Title": "Effacer Horloge",
-            "Message": "Êtes-vous sûr de vouloir effacer {name} ?"
+            "Title": "Delete Ticker",
+            "Message": "Are you sure you want to delete {name}?"
         },
-        "Empty": "Vide",
-        "SizeTooBigError": "Les Horloges ne peuvent pas dépasser {maxSize} segments.",
+        "Empty": "Empty",
+        "SizeTooBigError": "Ticker cannot be larger than {maxSize} segments.",
         "Settings": {
             "TickerTheme": {
-                "name": "Thème d'Horloge",
-                "hint": "Changer la couleur par défaut et ajouter de nouveaux choix",
-                "label": "Changer la configuration du thème d'Horloge"
+                "name": "Ticker Theme",
+                "hint": "Change the default color and add new color choices",
+                "label": "Change Ticker Theme Settings"
             },
             "tickerColors": {
-                "name": "Nom",
-                "color": "Couleur"
+                "name": "Name",
+                "color": "Color"
             },
             "defaultColor": {
-                "name": "Couleur par défaut de l'Horloge ",
-                "hint": "La couleur de base des horloges, en supposant qu'elles ne soient pas d'un type d'horloge spécifique"
+                "name": "Default Ticker Color",
+                "hint": "The color tickers have by base, assuming they are not of a specific ticker type"
             },
             "location": {
-                "name": "Emplacement sur l'écran",
-                "hint": "Où placer les horloges affichées"
+                "name": "Screen Location",
+                "hint": "Where to anchor the displayed tickerss"
             },
-            "offset": {
-                "name": "Décalage du panneau",
-                "hint": "Distance depuis le haut ou le bas en pixels (ajustée en fonction de la taille de la police)"
+            "vertoffset": {
+                "name": "Panel Vertical Offset",
+                "hint": "Distance from the top or bottom in pixels (adjusted by font size)"
             },
-            "gmSeesHidden": {
-                "name": "Les GM voient des noms cachés",
-                "hint": "La désactivation de cette option empêche les GM de voir le nom d'un minuteur si le joueur définit la confidentialité sur \"Hide Name\"."
+            "horzoffset": {
+                "name": "Panel Horizontal Offset",
+                "hint": "Distance from the right in pixels (adjusted by font size)"
+            },
+            "gmOverridePrivacy": {
+                "name": "GMs Unaffected By Privacy",
+                "hint": "This setting allows GMs to see private tickers and the names of tickers with \"Hide Name\" for privacy. Disabling this will make tickers behave the same for GMs as it does for players."
             }
         }
     }

@@ -68,13 +68,19 @@ export class TickerAddDialog extends Application {
                 const form = $html[0].querySelector("form");
                 const data = new FormDataExtended(form).object;
 
+                if ( data.shared ) // Shared tickers are always public
+                    data.privacy = PRIVACY_PUBLIC;
+
                 if ( data.privacy == "Private" )
                     data.privacy = PRIVACY_PRIVATE;
+
                 else if ( data.privacy == "Public" )
                     data.privacy = PRIVACY_PUBLIC;
+
                 else if ( data.privacy == "Hide Name")
                     data.privacy = PRIVACY_OBFUSCATE;
 
+                // If there is already ticker data then fill it in.
                 if (this.ticker) {
                     data.id = this.ticker.id;
                     data.value = Math.clamped(this.ticker.value, 0, data.max);

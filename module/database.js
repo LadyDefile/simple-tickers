@@ -11,6 +11,21 @@ export const PRIVACY_PUBLIC = 0;
 export const PRIVACY_PRIVATE = 1;
 export const PRIVACY_OBFUSCATE = 2;
 
+function getAuth(ticker) {
+    // If the current user is not the ticker owner and the ticker is not
+    // a GM ticker
+
+    // Start by assessing if the current user is the ticker owner
+    let auth = ticker.owner === game.user.id;
+
+    // Check if the user is a GM
+    auth |= game.user.isGM;
+
+    // Check if the ticker is shared
+    auth |= ticker.shared;
+    return auth;
+}
+
 export class TickerDatabase extends Collection {
     addTicker(data={}) {
         const defaultTicker = { value: 0, max: 4, name: "New Ticker", id: randomID(), privacy: PRIVACY_PUBLIC, owner: game.user.id, GMTicker: true };
@@ -49,7 +64,7 @@ export class TickerDatabase extends Collection {
         if ( !game.user.isGM)
         {
             // Don't allow someone to delete a ticker that doesn't belong to them
-            if ( tickers[id].owner != game.user.id )
+            if ( tickers[id].owner != game.user.id && !tickers[id].shared )
                 return;
 
             window.tickerSocket.executeAsGM("deleteTicker", id);
@@ -79,7 +94,7 @@ export class TickerDatabase extends Collection {
         if ( !game.user.isGM)
         {
             // Don't allow someone to delete a ticker that doesn't belong to them
-            if ( existing.owner != game.user.id )
+            if ( !getAuth(existing) )
                 return;
             
             window.tickerSocket.executeAsGM("updateTicker", data);
@@ -99,6 +114,10 @@ export class TickerDatabase extends Collection {
 
         if ( !game.user.isGM )
         {
+            // Don't allow someone to move a ticker that doesn't belong to them
+            if ( !getAuth(existing) )
+                return;
+
             window.tickerSocket.executeAsGM("moveTicker", id, idx);
             return;
         }
