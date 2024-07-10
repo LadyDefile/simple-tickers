@@ -69,6 +69,19 @@ export class TickerPanel extends Application {
         {
             let t = tickers[i];
 
+            // If the ticker is shared
+            if ( t.shared ) {
+                // Shared tickers are always viewable
+                t.viewable = true;
+                t.editable = t.owner === game.user.id;
+                t.editable |= game.user.isGM;
+
+                sharedTickers.push(t);
+
+                // Continue the loop as none of the other code applies to public
+                continue;
+            }
+
             // Obfuscate the name if needed
             if ( t.privacy == PRIVACY_OBFUSCATE
                 && !override_privacy
@@ -78,17 +91,9 @@ export class TickerPanel extends Application {
             // This flag is to enable the "private" eye icon.
             t.private = t.privacy == PRIVACY_PRIVATE;
 
-            // If the ticker is shared
-            if ( t.shared ) {
-                // Shared tickers are always viewable
-                t.viewable = true;
-                t.editable = t.owner === game.user.id;
-
-                sharedTickers.push(t);
-            }
 
             // If the ticker is a GM ticker
-            else if ( t.GMTicker )
+            if ( t.GMTicker )
             {
                 // If this is for GM's only and the user is not a GM
                 // hide it from the user.
@@ -138,6 +143,7 @@ export class TickerPanel extends Application {
                 userTickers[i].tickers = userTickers[i].ticker.reverse();
             }
         }
+        
         return {
             ...data,
             options: {
@@ -150,6 +156,7 @@ export class TickerPanel extends Application {
             GMTickers: this.verticalEdge === "bottom" ? gmTickers.reverse() : gmTickers,
             UserTickers: userTickers,
             SharedTickers: sharedTickers,
+            SharedCollapsed: collapsed.includes("shared-ticker-list"),
             offset: `${game.settings.get(MODULE_ID, "offset") / 16}rem`,
         };
     }

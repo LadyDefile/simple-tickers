@@ -29,7 +29,7 @@
     {{#if SharedTickers.[0]}}
         <div class="list-container">
             <a class="ticker-label" data-target="shared-ticker-list" data-action="collapse">Shared</a>
-            <div id="shared-ticker-list" class="ticker-list shared-ticker-list">
+            <div id="shared-ticker-list" class="ticker-list shared-ticker-list {{#if SharedCollapsed}}hidden{{/if}}">
                 {{#each SharedTickers as |sharedticker|}}
                     <div class="ticker-entry shared-ticker-entry" data-id="{{sharedticker.id}}">
                         <div class="ticker" style="--areas: {{sharedticker.max}}; --filled: {{sharedticker.value}}; --ticker-color: {{sharedticker.color}}">
