@@ -42,16 +42,20 @@
     display: inline;
 }
 
-.ticker-panel .ticker-entry, .ticker-panel [data-action=add-ticker] {
+.ticker-panel .ticker-entry, .ticker-panel [data-action=add-ticker], .ticker-panel [data-action=ticker-visibility] {
     background: rgba(15, 15, 15, 0.7);
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
     color: white;
 }
 
-.ticker-panel [data-action=add-ticker] {
+.ticker-panel [data-action=add-ticker], .ticker-panel [data-action=ticker-visibility] {
     border-radius: 5px;
     padding: 4px 6px;
     margin-right: 4px;
+}
+
+.ticker-panel [data-action=ticker-visibility]:hover > span {
+    display: inline-block !important;
 }
 
 .ticker-panel .ticker-entry {

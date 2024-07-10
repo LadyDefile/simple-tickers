@@ -150,7 +150,8 @@ export class TickerPanel extends Application {
                 editable: true,
                 isGM: game.user.isGM,
                 id: game.user.id,
-                showPersonal: bShow
+                showPersonal: bShow,
+                panelVisible: game.settings.get(MODULE_ID, "showTickerPanel")
             },
             verticalEdge: this.verticalEdge,
             GMTickers: this.verticalEdge === "bottom" ? gmTickers.reverse() : gmTickers,
@@ -253,7 +254,12 @@ export class TickerPanel extends Application {
                 collapsed.push(target);
                 game.settings.set(MODULE_ID, "collapsedHeaders", collapsed);
             }
-        })
+        });
+
+        $html.find("[data-action=ticker-visibility]").on("click", async (event) => {
+            let show = game.settings.get(MODULE_ID, "showTickerPanel");
+            game.settings.set(MODULE_ID, "showTickerPanel", !show);
+        });
 
         $html.find("[data-action=add-ticker]").on("click", async () => {
             new TickerAddDialog(null, (data) => this.db.addTicker(data)).render(true);

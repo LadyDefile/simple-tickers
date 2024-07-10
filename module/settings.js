@@ -77,6 +77,16 @@ function registerSettings() {
             window.tickerPanel.render(true);
         }
     });
+
+    game.settings.register(MODULE_ID, "showTickerPanel", {
+        name: "Show Ticker Panel",
+        config: false,
+        type: Boolean,
+        default: true,
+        onChange: () => {
+            window.tickerPanel.render(true);
+        }
+    })
 }
 
 class DisplaySettings extends FormApplication {

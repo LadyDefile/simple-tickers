@@ -1,80 +1,89 @@
 <section 
     class="ticker-panel {{#if @root.options.editable}}editable{{/if}} {{verticalEdge}}"
     style="--offset: {{offset}}">
-    {{#if GMTickers.[0]}}
-        <div class="list-container">
-            <a class="ticker-label" data-target="gm-ticker-list" data-action="collapse">GM</a>
-            <div id="gm-ticker-list" class="ticker-list gm-ticker-list">
-                {{#each GMTickers as |gmticker|}}
-                    <div class="ticker-entry gm-ticker-entry" data-id="{{gmticker.id}}">
-                        <div class="ticker" style="--areas: {{gmticker.max}}; --filled: {{gmticker.value}}; --ticker-color: {{gmticker.color}}">
-                            {{#each gmticker.spokes}}
-                                <div class="spoke" style="--index: {{ this }}"></div>
-                            {{/each}}
+    {{#if @root.options.panelVisible}}
+        {{#if GMTickers.[0]}}
+            <div class="list-container">
+                <a class="ticker-label" data-target="gm-ticker-list" data-action="collapse">GM</a>
+                <div id="gm-ticker-list" class="ticker-list gm-ticker-list">
+                    {{#each GMTickers as |gmticker|}}
+                        <div class="ticker-entry gm-ticker-entry" data-id="{{gmticker.id}}">
+                            <div class="ticker" style="--areas: {{gmticker.max}}; --filled: {{gmticker.value}}; --ticker-color: {{gmticker.color}}">
+                                {{#each gmticker.spokes}}
+                                    <div class="spoke" style="--index: {{ this }}"></div>
+                                {{/each}}
+                            </div>
+                            <div class="name-section">
+                                {{#if @root.options.isGM}}
+                                    <div class="controls">
+                                        <a data-action="delete-ticker"><i class="fas fa-trash"></i></a>
+                                        <a data-action="edit-ticker"><i class="fas fa-edit"></i></a>
+                                    </div>
+                                {{/if}}
+                                <div class="name">{{#if gmticker.private}}<i class="fas fa-eye-slash"></i>{{/if}} {{gmticker.name}}</div>
+                            </div>
                         </div>
-                        <div class="name-section">
-                            {{#if @root.options.isGM}}
-                                <div class="controls">
-                                    <a data-action="delete-ticker"><i class="fas fa-trash"></i></a>
-                                    <a data-action="edit-ticker"><i class="fas fa-edit"></i></a>
-                                </div>
-                            {{/if}}
-                            <div class="name">{{#if gmticker.private}}<i class="fas fa-eye-slash"></i>{{/if}} {{gmticker.name}}</div>
-                        </div>
-                    </div>
-                {{/each}}
+                    {{/each}}
+                </div>
             </div>
-        </div>
+        {{/if}}
+        {{#if SharedTickers.[0]}}
+            <div class="list-container">
+                <a class="ticker-label" data-target="shared-ticker-list" data-action="collapse">Shared</a>
+                <div id="shared-ticker-list" class="ticker-list shared-ticker-list {{#if SharedCollapsed}}hidden{{/if}}">
+                    {{#each SharedTickers as |sharedticker|}}
+                        <div class="ticker-entry shared-ticker-entry" data-id="{{sharedticker.id}}">
+                            <div class="ticker" style="--areas: {{sharedticker.max}}; --filled: {{sharedticker.value}}; --ticker-color: {{sharedticker.color}}">
+                                {{#each sharedticker.spokes}}
+                                    <div class="spoke" style="--index: {{ this }}"></div>
+                                {{/each}}
+                            </div>
+                            <div class="name-section">
+                                {{#if sharedticker.editable}}
+                                    <div class="controls">
+                                        <a data-action="delete-ticker"><i class="fas fa-trash"></i></a>
+                                        <a data-action="edit-ticker"><i class="fas fa-edit"></i></a>
+                                    </div>
+                                {{/if}}
+                                <div class="name">{{sharedticker.name}}</div>
+                            </div>
+                        </div>
+                    {{/each}}
+                </div>
+            </div>
+        {{/if}}
+        {{#each UserTickers as |user|}}
+            <div class="list-container {{#if (not user.visCount)}}hidden{{/if}}">
+                <a class="ticker-label" data-target="{{user.id}}" data-action="collapse">{{user.name}}</a>
+                <div class="ticker-list {{#if user.collapsed}}hidden{{/if}}" data-id="{{user.id}}">
+                    {{#each user.tickers as |ticker|}}
+                        <div class="ticker-entry user-ticker-entry {{#if (not ticker.viewable)}}hidden{{/if}}" data-id="{{ticker.id}}">
+                            <div class="ticker" style="--areas: {{ticker.max}}; --filled: {{ticker.value}}; --ticker-color: {{ticker.color}}">
+                                {{#each ticker.spokes}}
+                                    <div class="spoke" style="--index: {{ this }}"></div>
+                                {{/each}}
+                            </div>
+                            <div class="name-section">
+                                {{#if (or ticker.ownedByUser @root.options.isGM)}}
+                                    <div class="controls">
+                                        <a data-action="delete-ticker"><i class="fas fa-trash"></i></a>
+                                        <a data-action="edit-ticker"><i class="fas fa-edit"></i></a>
+                                    </div>
+                                {{/if}}
+                                <div class="name">{{#if ticker.private}}<i class="fas fa-eye-slash"></i>{{/if}}{{ticker.name}}</div>
+                            </div>
+                        </div>
+                    {{/each}}
+                </div>
+            </div>
+        {{/each}}
     {{/if}}
-    {{#if SharedTickers.[0]}}
-        <div class="list-container">
-            <a class="ticker-label" data-target="shared-ticker-list" data-action="collapse">Shared</a>
-            <div id="shared-ticker-list" class="ticker-list shared-ticker-list {{#if SharedCollapsed}}hidden{{/if}}">
-                {{#each SharedTickers as |sharedticker|}}
-                    <div class="ticker-entry shared-ticker-entry" data-id="{{sharedticker.id}}">
-                        <div class="ticker" style="--areas: {{sharedticker.max}}; --filled: {{sharedticker.value}}; --ticker-color: {{sharedticker.color}}">
-                            {{#each sharedticker.spokes}}
-                                <div class="spoke" style="--index: {{ this }}"></div>
-                            {{/each}}
-                        </div>
-                        <div class="name-section">
-                            {{#if sharedticker.editable}}
-                                <div class="controls">
-                                    <a data-action="delete-ticker"><i class="fas fa-trash"></i></a>
-                                    <a data-action="edit-ticker"><i class="fas fa-edit"></i></a>
-                                </div>
-                            {{/if}}
-                            <div class="name">{{sharedticker.name}}</div>
-                        </div>
-                    </div>
-                {{/each}}
-            </div>
-        </div>
-    {{/if}}
-    {{#each UserTickers as |user|}}
-        <div class="list-container {{#if (not user.visCount)}}hidden{{/if}}">
-            <a class="ticker-label" data-target="{{user.id}}" data-action="collapse">{{user.name}}</a>
-            <div class="ticker-list {{#if user.collapsed}}hidden{{/if}}" data-id="{{user.id}}">
-                {{#each user.tickers as |ticker|}}
-                    <div class="ticker-entry user-ticker-entry {{#if (not ticker.viewable)}}hidden{{/if}}" data-id="{{ticker.id}}">
-                        <div class="ticker" style="--areas: {{ticker.max}}; --filled: {{ticker.value}}; --ticker-color: {{ticker.color}}">
-                            {{#each ticker.spokes}}
-                                <div class="spoke" style="--index: {{ this }}"></div>
-                            {{/each}}
-                        </div>
-                        <div class="name-section">
-                            {{#if (or ticker.ownedByUser @root.options.isGM)}}
-                                <div class="controls">
-                                    <a data-action="delete-ticker"><i class="fas fa-trash"></i></a>
-                                    <a data-action="edit-ticker"><i class="fas fa-edit"></i></a>
-                                </div>
-                            {{/if}}
-                            <div class="name">{{#if ticker.private}}<i class="fas fa-eye-slash"></i>{{/if}}{{ticker.name}}</div>
-                        </div>
-                    </div>
-                {{/each}}
-            </div>
-        </div>
-    {{/each}}
-    <a data-action="add-ticker"><i class="fas fa-plus"></i> {{localize "SimpleTickers.AddTicker"}}</a>
+    <div class="st-button-panel">
+        {{#if @root.options.panelVisible}}
+            <a data-action="add-ticker"><i class="fas fa-plus"></i><span class="label-text"> {{localize "SimpleTickers.AddTicker"}}</span></a>
+            <a data-action="ticker-visibility" class="hide-text-label" title="Hide Tickers"><i class="fa-regular fa-square-minus"></i> Hide</a>
+        {{else}}
+            <a data-action="ticker-visibility" class="hide-text-label" title="Restore Tickers"><i class="fa-regular fa-window-restore"></i></a>
+        {{/if}}
+    </div>
 </section>
